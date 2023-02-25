@@ -11,7 +11,7 @@ It is an important step to calculate statistical power in a research design. In 
 
 
 More often, in a randomized controlled trial with two groups, we can use a formula to calculate the needed sample size to reject the null hypothesis. We will use an example to show how we do this. For instance, when we plan to perform a test of a hypothesis comparing the proportions of successes of tossing coins of faces in two independent populations, we would list the following null and alternative hypothesis respectively:
-$$ H_{0} :p_{1} =p_{2} $$
+$$  H_{0} :p_{1} =p_{2}  $$
 $$ H_{1} :p_{1} \neq p_{2} $$
 
 where $ p_{1} =p_{2} $ are the proportions in the two populations for comparison. In order to make sure the test has a specific power, we can use the following formula to determine the sample sizes:
