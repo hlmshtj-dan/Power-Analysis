@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>power-analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="Power Analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Power Analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="Power Analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="Power Analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Power Analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Power Analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Power Analysis_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Power Analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Power Analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Power Analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="simulation-based-power-analysis" class="level1">
+<h1>Simulation-Based Power Analysis</h1>
+</section>
+<section id="tutorial-material-from-iqss" class="level1">
+<h1>Tutorial material from IQSS</h1>
+</section>
+<section id="introduction" class="level1">
+<h1>1. Introduction</h1>
+<section id="basic-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="basic-concepts">1.1 Basic Concepts</h2>
+<p>It is an important step to calculate statistical power in a research design. In a research design, we use statistical power to measure the probability that a null hypothesis is correctly rejected. Usually, researchers need to know the needed sample size to reject the null hypothesis at a given power level, while in other cases, people calculates the power when the sample size is fixed.</p>
+<p>More often, in a randomized controlled trial with two groups, we can use a formula to calculate the needed sample size to reject the null hypothesis. We will use an example to show how we do this. For instance, when we plan to perform a test of a hypothesis comparing the proportions of successes of tossing coins of faces in two independent populations, we would list the following null and alternative hypothesis respectively: <span class="math display">\[ H_{0} :p_{1} =p_{2} \]</span> <span class="math display">\[ H_{1} :p_{1} \neq p_{2} \]</span></p>
+<p>where $ p_{1} =p_{2} $ are the proportions in the two populations for comparison. In order to make sure the test has a specific power, we can use the following formula to determine the sample sizes: <span class="math display">\[ N=2(\frac{z_{1-\frac{\alpha }{2} }+z_{1-\beta }  }{ES} )^{2} \]</span></p>
+<p>Where $ n_{i} $ is the sample size required in each group (i=1,2), $$ is the specific level of significance and $ z_{1- } $&nbsp;is the critical value corresponding to the significance level. $1-$ is the selected power and $z_{1-} $&nbsp;is the value from the standard normal distribution holding $1-$ below it. ES is the effect size, defined as follows:&nbsp; <span class="math display">\[   ES=\frac{|p_{1} =p_{2} |}{\sqrt{p(1-p)} }  \]</span> where <span class="math inline">\(|p_{1} =p_{2} |\)</span> is the absolute value of the proportions difference between the two groups holding under the alternative hypothesis, $ H_{1} $, and p is the proportion by pooling the observations from the two comparison groups. &nbsp;</p>
+<p>In Stata, we use the following code to calculate the sample size needed to reject the null hypothesis that $ H_{0} :p=0.5 $ ($ H_{1} :p=0.6 $) on different fixed power levels:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>   power oneproportion 0.5 0.6, n(10(2)40) <span class="kw">graph</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="https://github.com/hlmshtj-dan/pigo/blob/main/1.png?raw=true" class="img-fluid"></p>
+</section>
+<section id="procedures-to-perform-power-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="procedures-to-perform-power-analysis">1.2 Procedures to perform power analysis</h2>
+<ol type="1">
+<li>Specify a hypothesis test.</li>
+</ol>
+<p>Usually, there are several hypotheses in a research design, but for sample size calculation, make explicit a null and alternative hypothesis.</p>
+<ol start="2" type="1">
+<li>Specify the significance level of the test.</li>
+</ol>
+<p>It is usually <span class="math inline">\(\alpha\)</span> = .05, but other values could be taken too.</p>
+<ol start="3" type="1">
+<li>Get the values of the parameters necessary to compute the power function.</li>
+</ol>
+<p>To solve for sample size n, we need a value for standard deviation and other parameters. Need to note, sometimes we need to use a pilot dataset to get these values.</p>
+<ol start="4" type="1">
+<li>Specify the intended power of the test.</li>
+</ol>
+<p>The power of a test is the probability of finding significance if the alternative hypothesis is true.</p>
+<ol start="5" type="1">
+<li>Calculate the needed sample size for a fixed power level.</li>
+</ol>
+</section>
+</section>
+<section id="power-analysis-with-simulation" class="level1">
+<h1>2. Power Analysis with simulation</h1>
+<p>Nevertheless, formulas don’t always work out to calculate the needed sample size such as in complex study designs. In these cases, simulation based power analysis stand out. The basic idea is to simulate running the experiment many times and calculate the proportion of times we reject the null hypothesis. This proportion provides an estimate of power. Generating a dataset and running an analysis for the hypothesis test is part of the simulation. One thing to mention is that randomness is usually introduced into the process through the dataset generation.</p>
+<p>For example, say, the fixed power level is 95%, and you want to calculate the sample size on this level. You can take a “guess and check” method. With this method, firstly, you choose a sample size&nbsp;$ n_{1} $&nbsp;and run the simulation to estimate your power. If power is estimated to be lower than 95%, you need to select a new value&nbsp;&nbsp;$ n_{2} $ that is larger than&nbsp;&nbsp;$ n_{1} $&nbsp;running the simulation again. Multiple procedures are repeated until the estimated power is roughly 95%.</p>
+<p>As the example shows in the introduction part, for multiple commonly used statistical tests, we can use Stata’s power commands to calculate power and needed sample size. However, for complex models, such as multilevel or mixed effect models, we need to use simulations to calculate power and the needed sample size. In these scenarios, we usually use the following procedures to perform power analysis:</p>
+<p>1.Write down the regression model of interest, including all parameters.</p>
+<p>2.Specify the details of the covariates, such as the range of age or the proportion of females.</p>
+<p>3.Locate or think about reasonable values for the parameters in your model.</p>
+<p>4.Simulate a single dataset assuming the alternative hypothesis, and fit the model.</p>
+<p>5.Write a program to create the datasets, fit the models, and use simulate to test the program.</p>
+<p>6.Write a program to allows you to run your simulations with power.</p>
+<p>7.Write a program that you can use numlists for all parameters.</p>
+</section>
+<section id="simulation-based-power-analysis-in-stata" class="level1">
+<h1>3. Simulation-based Power Analysis in Stata</h1>
+<section id="simple-linear-regression" class="level2">
+<h2 class="anchored" data-anchor-id="simple-linear-regression">3.1 Simple linear regression</h2>
+<section id="write-down-the-regression-model-of-interest-including-all-parameters." class="level3">
+<h3 class="anchored" data-anchor-id="write-down-the-regression-model-of-interest-including-all-parameters.">3.1.1 Write down the regression model of interest, including all parameters.</h3>
+<p><span class="math display">\[ bpsystol =\beta _{0} +\beta _{1} (age)+\beta _{2} (sex )+\beta _{3} (age*sex )+\epsilon  \]</span></p>
+<p>where the variables of interest are age, sex and the interaction of age and sex. Also, you need to estimate the coefficients for <span class="math inline">\(\beta_{0}\)</span>, <span class="math inline">\(\beta_{1}\)</span>, <span class="math inline">\(\beta_{2}\)</span>, <span class="math inline">\(\beta_{3}\)</span>.</p>
+</section>
+<section id="specify-the-details-of-the-covariates." class="level3">
+<h3 class="anchored" data-anchor-id="specify-the-details-of-the-covariates.">3.1.2 Specify the details of the covariates.</h3>
+<p>You plan a study of systolic blood pressure (SBP) and you believe that there is an interaction between age and sex.</p>
+</section>
+<section id="locate-or-think-about-reasonable-values-for-the-parameters-in-your-model." class="level3">
+<h3 class="anchored" data-anchor-id="locate-or-think-about-reasonable-values-for-the-parameters-in-your-model.">3.1.3 Locate or think about reasonable values for the parameters in your model.</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">webuse</span> nhanes2</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> bpsystol c.age##ib1.sex</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      Source |       SS           df       MS      Number <span class="kw">of</span> <span class="kw">obs</span>   =    10,351</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>-------------+----------------------------------   <span class="fu">F</span>(3, 10347)     =   1180.87</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>       Model |     1437147         3      479049   Prob &gt; <span class="fu">F</span>        =    0.0000</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    Residual |  4197523.03    10,347  405.675367   R-squared       =    0.2551</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>-------------+----------------------------------   Adj R-squared   =    0.2548</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>       Total |  5634670.03    10,350  544.412563   Root MSE        =    20.141</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------------</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    bpsystol |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>-------------+----------------------------------------------------------------</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>         age |     .47062   .0167357    28.12   0.000     .4378147    .5034252</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>             |</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>         sex |</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>     Female  |  -20.45813   1.165263   -17.56   0.000    -22.74227   -18.17398</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>             |</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>   sex#c.age |</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>     Female  |   .3457346   .0230373    15.01   0.000      .300577    .3908923</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>             |</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>       <span class="dt">_cons</span> |   110.5691   .8440692   131.00   0.000     108.9146    112.2236</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------------</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Using the data data from the National Health and Nutrition Examination Survey (NHANES), we can estimate <span class="math inline">\(\beta_{0}\)</span>=110.6, <span class="math inline">\(\beta_{1}\)</span>=0.47, <span class="math inline">\(\beta_{2}\)</span>=-20.46, <span class="math inline">\(\beta_{3}\)</span>=0.35.</p>
+</section>
+<section id="simulate-a-single-dataset-assuming-the-alternative-hypothesis-and-fit-the-model." class="level3">
+<h3 class="anchored" data-anchor-id="simulate-a-single-dataset-assuming-the-alternative-hypothesis-and-fit-the-model.">3.1.4 Simulate a single dataset assuming the alternative hypothesis, and fit the model.</h3>
+<p>Next, we create a simulated dataset based on our assumptions about the model under the alternative hypothesis.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 15</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 100</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> age = runiformint(18,65)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> female = rbinomial(1,0.5)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> interact = age*female</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> <span class="fu">e</span> = rnormal(0,20)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> sbp = 110 + 0.5*age + (-20)*female + 0.35*interact  + <span class="fu">e</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can then test the null hypothesis that the interaction term equals zero using a likelihood-ratio test.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> sbp age i.female c.age#i.female</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> full</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> sbp age i.female</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> reduced</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>Likelihood-<span class="kw">ratio</span> <span class="kw">test</span>                                 LR <span class="fu">chi2</span>(1)  =      0.68</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>(Assumption: reduced nested <span class="kw">in</span> full)                  Prob &gt; <span class="fu">chi2</span> =    0.4089</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The test yields a p-value of 0.4089.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span> <span class="ot">list</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>scalars:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">r</span>(<span class="kw">p</span>) =  .4089399864598747</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">r</span>(<span class="fu">chi2</span>) =  .6818803412616035</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">r</span>(df) =  1</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> reject = (<span class="fu">r</span>(<span class="kw">p</span>)&lt;0.05)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="write-a-program-to-create-the-datasets-fit-the-models-and-use-simulate-to-test-the-program." class="level3">
+<h3 class="anchored" data-anchor-id="write-a-program-to-create-the-datasets-fit-the-models-and-use-simulate-to-test-the-program.">3.1.5 Write a program to create the datasets, fit the models, and use simulate to test the program.</h3>
+<p>Next, let’s write a program that creates datasets under the alternative hypothesis.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">program</span> <span class="kw">drop</span> simregress</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">program</span> simregress, rclass</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">version</span> 16</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// DEFINE THE INPUT PARAMETERS AND THEIR DEFAULT VALUES</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">syntax</span>, n(integer)          <span class="co">/// Sample size</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>          [ <span class="kw">alpha</span>(<span class="fu">real</span> 0.05)    <span class="co">/// Alpha level</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            intercept(<span class="fu">real</span> 110) <span class="co">/// Intercept parameter</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            age(<span class="fu">real</span> 0.5)       <span class="co">/// Age parameter</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            female(<span class="fu">real</span> -20)    <span class="co">/// Female parameter</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>            interact(<span class="fu">real</span> 0.35) <span class="co">/// Interaction parameter</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            esd(<span class="fu">real</span> 20) ]      <span class="co">//  Standard deviation of the error</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> {</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// GENERATE THE RANDOM DATA</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">clear</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> <span class="kw">obs</span> <span class="ot">`n'</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> age = runiformint(18,65)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> female = rbinomial(1,0.5)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> interact = age*female</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> <span class="fu">e</span> = rnormal(0,<span class="ot">`esd'</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> sbp = <span class="ot">`intercept'</span> + <span class="ot">`age'</span>*age + <span class="ot">`female'</span>*female + <span class="co">///</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>           <span class="ot">`interact'</span>*interact  + <span class="fu">e</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">// </span><span class="al">TEST</span><span class="co"> THE NULL HYPOTHESIS</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="kw">regress</span> sbp age i.female c.age#i.female</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">estimates</span> <span class="kw">store</span> full</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">regress</span> sbp age i.female</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="kw">estimates</span> <span class="kw">store</span> reduced</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lrtest</span> full reduced</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// RETURN RESULTS</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> reject = (<span class="fu">r</span>(<span class="kw">p</span>)&lt;<span class="ot">`alpha'</span>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Below, we use simulate to run simregress 100 times and summarize the variable reject. The results indicate that we would have 16% power to detect an interaction parameter of 0.35 given a sample of 100 participants and the other assumptions about the model.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">simulate</span> reject=<span class="fu">r</span>(reject), reps(100):   </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>&gt;         simregress, n(100) age(0.5) female(20) interact(0.35) </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>&gt;            esd(20) <span class="kw">alpha</span>(0.05)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      command:  simregress, n(100) age(0.5) female(20) interact(0.35)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>&gt; esd(20) <span class="kw">alpha</span>(0.05)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>       reject:  <span class="fu">r</span>(reject)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>Simulations (100)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>..................................................    50</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>..................................................   100</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>. <span class="kw">summarize</span> reject</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    Variable |        Obs        Mean    Std. Dev.       Min        Max</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>-------------+---------------------------------------------------------</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      reject |        100         .16    .3684529          0          1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="write-a-program-called-power_cmd_simregress-which-allows-you-to-run-your-simulations-with-power." class="level3">
+<h3 class="anchored" data-anchor-id="write-a-program-called-power_cmd_simregress-which-allows-you-to-run-your-simulations-with-power.">3.1.6 Write a program called power_cmd_simregress, which allows you to run your simulations with power.</h3>
+<p>Next, let’s write a program called power_cmd_simregress so that we can integrate simregress into Stata’s power command.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">program</span> <span class="kw">drop</span> power_cmd_simregress</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">program</span> power_cmd_simregress, rclass</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">version</span> 16</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// DEFINE THE INPUT PARAMETERS AND THEIR DEFAULT VALUES</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">syntax</span>, n(integer)          <span class="co">/// Sample size</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>          [ <span class="kw">alpha</span>(<span class="fu">real</span> 0.05)    <span class="co">/// Alpha level</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            intercept(<span class="fu">real</span> 110) <span class="co">/// Intercept parameter</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            age(<span class="fu">real</span> 0.5)       <span class="co">/// Age parameter</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            female(<span class="fu">real</span> -20)    <span class="co">/// Female parameter</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            interact(<span class="fu">real</span> 0.35) <span class="co">/// Interaction parameter</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            esd(<span class="fu">real</span> 20)        <span class="co">/// Standard deviation of the error</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            reps(integer 100)]  <span class="co">//   Number of repetitions</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// GENERATE THE RANDOM DATA AND </span><span class="al">TEST</span><span class="co"> THE NULL HYPOTHESIS</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> {</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">simulate</span> reject=<span class="fu">r</span>(reject), reps(<span class="ot">`reps'</span>):               <span class="co">///</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>             simregress, n(<span class="ot">`n'</span>) age(<span class="ot">`age'</span>) female(<span class="ot">`female'</span>)    <span class="co">///</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                         interact(<span class="ot">`interact'</span>) esd(<span class="ot">`esd'</span>) <span class="kw">alpha</span>(<span class="ot">`alpha'</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">summarize</span> reject</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// RETURN RESULTS</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> power = <span class="fu">r</span>(<span class="kw">mean</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> <span class="kw">N</span> = <span class="ot">`n'</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> <span class="kw">alpha</span> = <span class="ot">`alpha'</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> intercept = <span class="ot">`intercept'</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> age = <span class="ot">`age'</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> female = <span class="ot">`female'</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> interact = <span class="ot">`interact'</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> esd = <span class="ot">`esd'</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="write-a-program-called-power_cmd_simregress_init." class="level3">
+<h3 class="anchored" data-anchor-id="write-a-program-called-power_cmd_simregress_init.">3.1.7 Write a program called power_cmd_simregress_init.</h3>
+<p>Run power simregress for a range of input parameter values, including the parameters listed in double quotes.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">program</span> <span class="kw">drop</span> power_cmd_simregress_init</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">program</span> power_cmd_simregress_init, sclass</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">sreturn</span> <span class="kw">local</span> pss_colnames <span class="st">"intercept age female interact esd"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">sreturn</span> <span class="kw">local</span> pss_numopts  <span class="st">"intercept age female interact esd"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we’re ready to use power simregress! The output below shows the simulated power when the interaction parameter equals 0.2 to 0.4 in increments of 0.05 for samples of size 400, 500, 600, and 700.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>power simregress, n(400(100)700) intercept(110)                 <span class="co">///</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                   age(0.5) female(-20) interact(0.2(0.05)0.4)   <span class="co">///</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                   reps(1000) <span class="kw">table</span> <span class="kw">graph</span>(xdimension(interact)   <span class="co">///</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                   <span class="bn">legend</span>(<span class="bn">rows</span>(1)))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>Estimated power</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>Two-sided <span class="kw">test</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  +--------------------------------------------------------------------+</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  |   <span class="kw">alpha</span>   power       <span class="kw">N</span> intercept     age  female interact     esd |</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  |--------------------------------------------------------------------|</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  |     .05    .267     400       110      .5     -20       .2      20 |</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  |     .05    .398     400       110      .5     -20      .25      20 |</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  |     .05    .547     400       110      .5     -20       .3      20 |</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  |     .05    .677     400       110      .5     -20      .35      20 |</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  |     .05    .792     400       110      .5     -20       .4      20 |</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  |     .05     .33     500       110      .5     -20       .2      20 |</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  |     .05     .46     500       110      .5     -20      .25      20 |</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  |     .05    .646     500       110      .5     -20       .3      20 |</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  |     .05    .763     500       110      .5     -20      .35      20 |</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  |     .05    .854     500       110      .5     -20       .4      20 |</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  |     .05    .384     600       110      .5     -20       .2      20 |</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  |     .05    .563     600       110      .5     -20      .25      20 |</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  |     .05    .702     600       110      .5     -20       .3      20 |</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  |     .05    .841     600       110      .5     -20      .35      20 |</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  |     .05    .928     600       110      .5     -20       .4      20 |</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  |     .05    .444     700       110      .5     -20       .2      20 |</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  |     .05    .641     700       110      .5     -20      .25      20 |</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  |     .05    .793     700       110      .5     -20       .3      20 |</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  |     .05    .904     700       110      .5     -20      .35      20 |</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  |     .05    .958     700       110      .5     -20       .4      20 |</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  +--------------------------------------------------------------------+</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="https://github.com/hlmshtj-dan/pigo/blob/main/2.png?raw=true" style="zoom:80%"></p>
+</section>
+</section>
+<section id="fixed-effect-models" class="level2">
+<h2 class="anchored" data-anchor-id="fixed-effect-models">3.2 Fixed Effect models</h2>
+<section id="write-down-the-regression-model-of-interest-including-all-parameters.-1" class="level3">
+<h3 class="anchored" data-anchor-id="write-down-the-regression-model-of-interest-including-all-parameters.-1">3.2.1 Write down the regression model of interest, including all parameters.</h3>
+<p><span class="math display">\[ weight_{it} =\beta _{0} +\beta _{1} (age _{it} )+\beta _{2} (female _{i} )+\beta _{3} (age _{it} *female _{i} )+\mu _{0i}+\mu _{1i}(age)+\epsilon _{it}  \]</span></p>
+<p>where i stands for children, t for age, and we assume <span class="math inline">\(\mu _{0i}\sim N(0,\tau _{0} )\)</span>, <span class="math inline">\(\mu _{1i}\sim N(0,\tau _{1} )\)</span>, <span class="math inline">\(\epsilon _{it}\sim N(0,\sigma)\)</span>, and <span class="math inline">\(cov(\tau _{0},\tau _{1})=0\)</span>.</p>
+<p>The covariates are weight, age, female, and the interaction term age*female. Also, we need to estimate the coefficients for <span class="math inline">\(\beta_{0}\)</span>, <span class="math inline">\(\beta_{1}\)</span>, <span class="math inline">\(\beta_{2}\)</span>, <span class="math inline">\(\beta_{3}\)</span>,$<em>{0} <span class="math inline">\(,\)</span></em>{1} $ and <span class="math inline">\(\sigma\)</span>.</p>
+</section>
+<section id="specify-the-details-of-the-covariates-such-as-the-range-of-age-or-the-proportion-of-females." class="level3">
+<h3 class="anchored" data-anchor-id="specify-the-details-of-the-covariates-such-as-the-range-of-age-or-the-proportion-of-females.">3.2.2 Specify the details of the covariates, such as the range of age or the proportion of females.</h3>
+<p>Let’s assume that we will measure the children’s weight every 4 months for 4 years beginning at age 10. Also, in the sample, the proportion of female is equal to that of male. It’s not difficult to calculate the iteration term when generate the variable for age and female.</p>
+</section>
+<section id="locate-or-think-about-reasonable-values-for-the-parameters-in-your-model.-1" class="level3">
+<h3 class="anchored" data-anchor-id="locate-or-think-about-reasonable-values-for-the-parameters-in-your-model.-1">3.2.3 Locate or think about reasonable values for the parameters in your model.</h3>
+<p>In this step, we use an external data set measuring Asian kid’s data to estimate the coefficients for the above regression model, and we get <span class="math inline">\(\beta_{0}\)</span>=5.35, <span class="math inline">\(\beta_{1}\)</span>=3.59, <span class="math inline">\(\beta_{2}\)</span>=-0.47, <span class="math inline">\(\beta_{3}\)</span>=-0.24,$<em>{0} <span class="math inline">\(=0.24,\)</span></em>{1} $ -0.57and <span class="math inline">\(\sigma\)</span>=1.17.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mixed <span class="kw">weight</span> c.age##i.girl || id: age, stddev</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>Performing EM optimization:</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>Performing <span class="kw">gradient</span>-based optimization:</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>Iteration 0:   <span class="fu">log</span> likelihood = -339.79909</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>Iteration 1:   <span class="fu">log</span> likelihood = -339.41232</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>Iteration 2:   <span class="fu">log</span> likelihood = -339.41033</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>Iteration 3:   <span class="fu">log</span> likelihood = -339.41032</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>Computing standard errors:</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>Mixed-<span class="kw">effects</span> ML regression                     Number <span class="kw">of</span> <span class="kw">obs</span>     =        198</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>Group <span class="kw">variable</span>: id                              Number <span class="kw">of</span> groups  =         68</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                                                Obs per <span class="fu">group</span>:</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                                                              <span class="fu">min</span> =          1</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                                                              avg =        2.9</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                                                              <span class="fu">max</span> =          5</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>                                                Wald <span class="fu">chi2</span>(3)      =     680.51</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>Log likelihood = -339.41032                     Prob &gt; <span class="fu">chi2</span>       =     0.0000</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------------</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>      <span class="kw">weight</span> |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>-------------+----------------------------------------------------------------</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>         age |   3.588488   .1892333    18.96   0.000     3.217598    3.959379</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>             |</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>        girl |</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>       girl  |   -.468204   .2954284    -1.58   0.113    -1.047233     .110825</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>             |</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  girl#c.age |</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>       girl  |  -.2397793    .267607    -0.90   0.370    -.7642793    .2847208</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>             |</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>       <span class="dt">_cons</span> |   5.351429   .2076606    25.77   0.000     4.944421    5.758436</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------------</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------------</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>  Random-<span class="kw">effects</span> Parameters  |   Estimate   Std. Err.     [95% Conf. Interval]</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>-----------------------------+------------------------------------------------</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>id: Independent              |</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">sd</span>(age) |   .5662947   .1219764      .3712777    .8637461</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">sd</span>(<span class="dt">_cons</span>) |   .2384136   .4034962      .0086445    6.575403</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>-----------------------------+------------------------------------------------</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>                <span class="fu">sd</span>(Residual) |   1.165676   .0762599      1.025395    1.325148</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------------</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>LR <span class="kw">test</span> vs. linear <span class="kw">model</span>: <span class="fu">chi2</span>(2) = 20.38                 Prob &gt; <span class="fu">chi2</span> = 0.0000</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>Note: LR <span class="kw">test</span> is conservative and provided only <span class="kw">for</span> reference.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="simulate-a-single-dataset-assuming-the-alternative-hypothesis-and-fit-the-model.-1" class="level3">
+<h3 class="anchored" data-anchor-id="simulate-a-single-dataset-assuming-the-alternative-hypothesis-and-fit-the-model.-1">3.2.4 Simulate a single dataset assuming the alternative hypothesis, and fit the model.</h3>
+<p>Next, we create a simulated dataset based on our assumptions about the model under the alternative hypothesis. We will simulate 5 observations at 4-month increments for 200 children.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 16</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 200</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> child = <span class="dt">_n</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> female = rbinomial(1,0.5)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> u_0i = rnormal(0,0.25)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> u_1i = rnormal(0,0.60)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>expand 5</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> child: <span class="kw">generate</span> age = (<span class="dt">_n</span>-1)*0.5</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> interaction = age*female</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> e_ij = rnormal(0,1.2)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> <span class="kw">weight</span> = 5.35 + 3.6*age + (-0.5)*female + (-0.25)*interaction <span class="co">///</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    + u_0i + age*u_1i + e_ij</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Our dataset includes the random deviations that we would not observe in a real dataset. We can then use mixed to fit a model to our simulated data.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mixed <span class="kw">weight</span> age i.female c.age#i.female || child: age , stddev <span class="kw">nolog</span> <span class="kw">noheader</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> full</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>mixed <span class="kw">weight</span> age i.female || child: age , stddev <span class="kw">nolog</span> <span class="kw">noheader</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> reduced</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">lrtest</span> full reduced</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can then test the null hypothesis that the interaction term equals zero using a likelihood-ratio test.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a> <span class="kw">lrtest</span> full reduced</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Likelihood-<span class="kw">ratio</span> <span class="kw">test</span>                                 LR <span class="fu">chi2</span>(1)  =      8.23</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>(Assumption: reduced nested <span class="kw">in</span> full)                  Prob &gt; <span class="fu">chi2</span> =    0.0041</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The p-value for our test is 0.0041, so we would reject the null hypothesis that the interaction term equals zero.</p>
+</section>
+<section id="write-a-program-to-create-the-datasets-fit-the-models-and-use-simulate-to-test-the-program.-1" class="level3">
+<h3 class="anchored" data-anchor-id="write-a-program-to-create-the-datasets-fit-the-models-and-use-simulate-to-test-the-program.-1">3.2.5 Write a program to create the datasets, fit the models, and use simulate to test the program.</h3>
+<p>Next, let’s write a program that creates datasets under the alternative hypothesis, fits mixed models, tests the null hypothesis of interest, and uses simulate to run many iterations of the program.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">program</span> <span class="kw">drop</span> simmixed</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">program</span> simmixed, rclass</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">version</span> 16</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// PARSE INPUT</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">syntax</span>, n1(integer)             <span class="co">///</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            n(integer)              <span class="co">///</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>          [ <span class="kw">alpha</span>(<span class="fu">real</span> 0.05)        <span class="co">///</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            intercept(<span class="fu">real</span> 5.35)    <span class="co">///</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>            age(<span class="fu">real</span> 3.6)           <span class="co">///</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>            female(<span class="fu">real</span> -0.5)       <span class="co">///</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>            interact(<span class="fu">real</span> -0.25)    <span class="co">///</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>            u0i(<span class="fu">real</span> 0.25)          <span class="co">///</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>            u1i(<span class="fu">real</span> 0.60)          <span class="co">///</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>            eij(<span class="fu">real</span> 1.2) ]</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// COMPUTE POWER</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> {</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">drop</span> <span class="dt">_all</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> <span class="kw">obs</span> <span class="ot">`n'</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> child = <span class="dt">_n</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> female = rbinomial(1,0.5)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> u_0i = rnormal(0,<span class="ot">`u0i'</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> u_1i = rnormal(0,<span class="ot">`u1i'</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>        expand <span class="ot">`n1'</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">bysort</span> child: <span class="kw">generate</span> age = (<span class="dt">_n</span>-1)*0.5</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> interaction = age*female</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> e_ij = rnormal(0,<span class="ot">`eij'</span>)</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>        <span class="kw">generate</span> <span class="kw">weight</span> = <span class="ot">`intercept'</span> + <span class="ot">`age'</span>*age + <span class="ot">`female'</span>*female + <span class="co">///</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>           <span class="ot">`interact'</span>*interaction  + u_0i + age*u_1i + e_ij</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>        mixed <span class="kw">weight</span> age i.female c.age#i.female || child: age, iter(200)</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>        <span class="kw">local</span> conv1 = <span class="fu">e</span>(converged)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>        <span class="kw">estimates</span> <span class="kw">store</span> full</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>        mixed <span class="kw">weight</span> age i.female || child: age, iter(200)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>        <span class="kw">local</span> conv2 = <span class="fu">e</span>(converged)</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>        <span class="kw">estimates</span> <span class="kw">store</span> reduced</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lrtest</span> full reduced</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>        <span class="kw">local</span> reject = <span class="fu">cond</span>(<span class="ot">`conv1'</span> + <span class="ot">`conv2'</span>==2, (<span class="fu">r</span>(<span class="kw">p</span>)&lt;<span class="ot">`alpha'</span>), .)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    <span class="co">// RETURN RESULTS</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> reject = <span class="ot">`reject'</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> conv = <span class="ot">`conv1'</span>+<span class="ot">`conv2'</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We then use simulate to run simmixed 10 times using the default parameter values for 5 observations on each of 200 children.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">simulate</span> reject=<span class="fu">r</span>(reject) converged=<span class="fu">r</span>(conv), reps(10) <span class="dv">seed</span>(12345):      </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>             simmixed, n1(5) n(200)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      command:  simmixed, n1(5) n(200)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>       reject:  <span class="fu">r</span>(reject)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    converged:  <span class="fu">r</span>(conv)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>Simulations (10)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>simulate saved the results of the hypothesis tests to a variable named reject. The mean of reject is our estimate of the power to test the null hypothesis that the age×sex interaction term equals zero, assuming that the weight of 200 children is measured 5 times.</p>
+</section>
+<section id="write-a-program-called-power_cmd_mymethod-which-allows-you-to-run-your-simulations-with-power." class="level3">
+<h3 class="anchored" data-anchor-id="write-a-program-called-power_cmd_mymethod-which-allows-you-to-run-your-simulations-with-power.">3.2.6 Write a program called power_cmd_mymethod, which allows you to run your simulations with power.</h3>
+<p>We could stop with our quick simulation if we were interested only in a specific set of assumptions. But it’s easy to write an additional program named power_cmd_simmixed that will allow us to use Stata’s power command to create tables and graphs for a range of sample sizes.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">program</span> <span class="kw">drop</span> power_cmd_simmixed</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">program</span> power_cmd_simmixed, rclass</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">version</span> 16</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// PARSE INPUT</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">syntax</span>, n1(integer)             <span class="co">///</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            n(integer)              <span class="co">///</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>          [ <span class="kw">alpha</span>(<span class="fu">real</span> 0.05)        <span class="co">///</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            intercept(<span class="fu">real</span> 5.35)    <span class="co">///</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            age(<span class="fu">real</span> 3.6)           <span class="co">///</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>            female(<span class="fu">real</span> -0.5)       <span class="co">///</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>            interact(<span class="fu">real</span> -0.25)    <span class="co">///</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>            u0i(<span class="fu">real</span> 0.25)          <span class="co">///</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>            u1i(<span class="fu">real</span> 0.60)          <span class="co">///</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>            eij(<span class="fu">real</span> 1.2)           <span class="co">///</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>            reps(integer 1000) ]</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// COMPUTE POWER</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> {</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">simulate</span> reject=<span class="fu">r</span>(reject), reps(<span class="ot">`reps'</span>):                            <span class="co">///</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        simmixed, n1(<span class="ot">`n1'</span>) n(<span class="ot">`n'</span>) <span class="kw">alpha</span>(<span class="ot">`alpha'</span>) intercept(<span class="ot">`intercept'</span>)     <span class="co">///</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>                  age(<span class="ot">`age'</span>) female(<span class="ot">`female'</span>) interact(<span class="ot">`interact'</span>)          <span class="co">///</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>                  u0i(<span class="ot">`u0i'</span>) u1i(<span class="ot">`u1i'</span>) eij(<span class="ot">`eij'</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>        <span class="kw">summarize</span> reject</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">// RETURN RESULTS</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> power = <span class="fu">r</span>(<span class="kw">mean</span>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> n1 = <span class="ot">`n1'</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> <span class="kw">N</span> = <span class="ot">`n'</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> <span class="kw">alpha</span> = <span class="ot">`alpha'</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> intercept = <span class="ot">`intercept'</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> age = <span class="ot">`age'</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> female = <span class="ot">`female'</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> interact = <span class="ot">`interact'</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> u0i = <span class="ot">`u0i'</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> u1i = <span class="ot">`u1i'</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span> <span class="fu">scalar</span> eij = <span class="ot">`eij'</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="write-a-program-called-power_cmd_mymethod_init-so-that-you-can-use-numlists-for-all-parameters." class="level3">
+<h3 class="anchored" data-anchor-id="write-a-program-called-power_cmd_mymethod_init-so-that-you-can-use-numlists-for-all-parameters.">3.2.7 Write a program called power_cmd_mymethod_init so that you can use numlists for all parameters.</h3>
+<p>It’s also easy to write a program named power_cmd_simmixed_init that will allow us to simulate power for a range of values for the parameters in our model.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">program</span> <span class="kw">drop</span> power_cmd_simmixed_init</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">program</span> power_cmd_simmixed_init, sclass</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>      <span class="kw">version</span> 16</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">sreturn</span> <span class="kw">clear</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      <span class="co">// ADD COLUMNS TO THE OUTPUT TABLE</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">sreturn</span> <span class="kw">local</span> pss_colnames <span class="st">"n1 intercept age female interact u0i u1i eij"</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>      <span class="co">// ALLOW NUMLISTS FOR ALL PARAMETERS</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">sreturn</span> <span class="kw">local</span> pss_numopts  <span class="st">"n1 intercept age female interact u0i u1i eij"</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we can use power simmixed to simulate power for a variety of assumptions. The example below simulates power for a range of sample sizes at both levels 1 and 2. Level 2 sample sizes range from 100 to 500 children in increments of 100. At level 1, we consider 5 and 6 observations per child.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>power simmixed, n1(5 6) n(100(100)500) reps(1000)                         </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>               <span class="kw">table</span>(n1 <span class="kw">N</span> power)                                         </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>               <span class="kw">graph</span>(ydimension(power) xdimension(<span class="kw">N</span>) plotdimension(n1)    </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="bn">xtitle</span>(Level 2 Sample Size) <span class="bn">legend</span>(<span class="bn">title</span>(Level 1 Sample Size)))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>xxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>Estimated power</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>Two-sided <span class="kw">test</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  +-------------------------+</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  |      n1       <span class="kw">N</span>   power |</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  |-------------------------|</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  |       5     100   .2629 |</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  |       6     100    .313 |</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  |       5     200    .397 |</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  |       6     200    .569 |</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  |       5     300    .621 |</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  |       6     300    .735 |</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  |       5     400    .734 |</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  |       6     400    .855 |</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  |       5     500    .828 |</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  |       6     500    .917 |</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  +-------------------------+</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="https://github.com/hlmshtj-dan/pigo/blob/main/3.png?raw=true" style="zoom:80%"></p>
+</section>
+</section>
+</section>
+<section id="power-analysis-in-python" class="level1">
+<h1>4. Power Analysis in Python</h1>
+<section id="linear-model-power-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="linear-model-power-analysis">4.1 Linear Model power analysis</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="multi-variable-model-power-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="multi-variable-model-power-analysis">4.2 Multi-Variable Model power analysis</h2>
+</section>
+</section>
+<section id="power-analysis-in-r" class="level1">
+<h1>5. Power Analysis in R</h1>
+<section id="linear-model-power-analysis-1" class="level2">
+<h2 class="anchored" data-anchor-id="linear-model-power-analysis-1">5.1 Linear Model power analysis</h2>
+</section>
+<section id="multi-variable-model-power-analysis-1" class="level2">
+<h2 class="anchored" data-anchor-id="multi-variable-model-power-analysis-1">5.2 Multi-Variable Model power analysis</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
